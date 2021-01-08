@@ -26,6 +26,22 @@ class RegisterFrom(forms.Form):
         return email
 
 
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='E-Mail')
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'id': 'password'
+    }))
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        result = User.object.filter(email__iexact=email)
+
+        if not result.exists():
+            raise forms.ValidationError('The account with provided email does not exists!')
+
+        return email
+
+
 class CreateTicketFrom(forms.Form):
     email = forms.EmailField(label='E-Mail', required=True)
     password = forms.CharField(widget=forms.PasswordInput)
