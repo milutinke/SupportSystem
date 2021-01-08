@@ -7,4 +7,6 @@ support_urlpatterns = [
     path('', views.index),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register', views.register_view),
+    path('tickets', views.tickets),
+    path('tickets/<int:ticket_id>', views.ticket)
 ]

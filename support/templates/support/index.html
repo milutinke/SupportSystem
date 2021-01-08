@@ -7,6 +7,10 @@
     <body>
         <h1>Support System</h1>
 
+        {% if request.session.error %}
+            <p>{{ request.session.error }}</p>
+        {% endif %}
+
         {% if not request.user.is_authenticated %}
             <a href="/accounts/login">Login</a>
             <a href="/register">Register</a>

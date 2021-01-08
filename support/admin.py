@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from .models import Ticket, TicketAnswers
 
 User = get_user_model()
 
@@ -14,3 +15,5 @@ class UserAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(User, UserAdmin)
+admin.site.register(Ticket)
+admin.site.register(TicketAnswers)

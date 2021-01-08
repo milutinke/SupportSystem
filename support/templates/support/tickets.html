@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tickets</title>
+    </head>
+    <body>
+        <h1>Tickets</h1>
+
+        {% if tickets is not None %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Product</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td><a href="/tickets/{{ ticket.id }}">{{ ticket.title }}</a></td>
+                        <td>{{ ticket.product }}</td>
+                        <td>{{ ticket.created_at }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>There are no tickets... <a href="/tickets/new">Create a new one</a></p>
+    {% endif %}
+    </body>
+</html>

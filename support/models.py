@@ -76,3 +76,22 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class Ticket(models.Model):
+    title = models.CharField(max_length=128)
+    product = models.CharField(max_length=128)
+    content = models.CharField(max_length=2048)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+
+class TicketAnswers(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=2048)
+    created_at = models.DateTimeField(auto_now_add=True)
+

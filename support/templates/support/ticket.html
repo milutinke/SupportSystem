@@ -1,38 +1,40 @@
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Ticket #{{ ticket_id }}</title>
+        <title>Ticket #{{ ticket.id }}</title>
     </head>
     <body>
-        <h1>Ticket #{{ ticket_id }}</h1>
-        <h2>Title: {{ ticket_title }}</h2>
-        <h2>Product: {{ ticket_product }}</h2>
-        <h2>Time: {{ ticket_time }}</h2>
+        <h1>Ticket #{{ ticket.id }}</h1>
+        <h2>Title: {{ ticket.title }}</h2>
+        <h2>Product: {{ ticket.product }}</h2>
+        <h2>Time: {{ ticket.created_at }}</h2>
 
         <p>Body:</p>
         <hr />
-        {{ ticket_content }}
+        {{ ticket.content }}
         <hr />
         <p>Conversation:</p>
         <hr />
 
-        {% if not replys %}
+        {% if not answers %}
             <h1>No conversation history</h1>
             <hr />
         {% else %}
-            {% for reply in replys %}
-                <h2>Time: {{ reply.time }}</h2>
-                <h2>User: {{ reply.user }}</h2>
-                <p>Time: {{ reply.content }}</p>
+            {% for answer in answers %}
+                <h2>Time: {{ answer.created_at }}</h2>
+                <h2>User: {{ answer.user }}</h2>
+                <p>Body: {{ answer.content }}</p>
                 <hr />
             {% endfor %}
         {% endif %}
 
-        <p>Reply:</p>
-        <form method="post" action="">
+        <p>Answer:</p>
+        <form method="post" action="/tickets/{{ ticket.id }}">
             {% csrf_token %}
-            {{ form }}
+            {{ form|crispy }}
 
             <input type="submit" value="Reply" />
         </form>

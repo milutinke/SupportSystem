@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from . import forms
+from .models import Ticket, TicketAnswers
+from django.http import HttpResponse
 
 User = get_user_model()
 
@@ -31,7 +33,7 @@ def register_view(request):
                 login(request, user)
                 return redirect('/')
             else:
-                request.session['register_error'] = 1
+                request.session['error'] = 'Registration error!'
     else:
         form = forms.RegisterFrom()
 
@@ -51,7 +53,7 @@ def login_view(request):
             login(request, user)
             return redirect('/')
         else:
-            request.session['invalid_user'] = 1
+            request.session['error'] = 'Invalid user!'
 
     return render(request, 'login.html', {'form': form})
 
@@ -60,3 +62,58 @@ def logout_view(request):
     logout(request)
 
     return render(request, 'logout.html')
+
+
+def tickets(request):
+    if not request.user.is_authenticated:
+        request.session['error'] = 'You must be logged in to see this!'
+        return redirect('/')
+
+    try:
+        tickets_ = Ticket.objects.filter(user_id=request.user.id)
+    except Ticket.DoesNotExist:
+        tickets_ = None
+
+    return render(request, 'support/tickets.html', {'tickets': tickets_})
+
+
+def ticket(request, ticket_id):
+    if not request.user.is_authenticated:
+        request.session['error'] = 'You must be logged in to see this!'
+        return redirect('/')
+
+    try:
+        ticket_ = Ticket.objects.get(id=ticket_id)
+
+        if ticket_.user.id != request.user.id:
+            request.session['error'] = 'Action forbidden!'
+            return redirect('/')
+
+    except Ticket.DoesNotExist:
+        request.session['error'] = 'Invalid ticket!'
+        return redirect('/')
+
+    if request.method == 'POST':
+        form = forms.AnswerTicketForm(data=request.POST)
+
+        if form.is_valid():
+            content = form.cleaned_data.get('content')
+            answer = TicketAnswers(content=content, user=request.user, ticket=ticket_)
+            answer.save()
+
+        return redirect('/tickets/' + ticket_id.__str__())
+    else:
+        form = forms.AnswerTicketForm(None)
+
+    try:
+        answers = TicketAnswers.objects.filter(ticket_id=ticket_id)
+    except TicketAnswers.DoesNotExist:
+        answers = None
+
+    context = {
+        'ticket': ticket_,
+        'answers': answers,
+        'form': form
+    }
+
+    return render(request, 'support/ticket.html', context)

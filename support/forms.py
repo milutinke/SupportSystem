@@ -59,10 +59,10 @@ class CreateTicketFrom(forms.Form):
 
 
 class CreateTicketFrom(forms.Form):
-    title = forms.CharField(max_length=96, required=True)
+    title = forms.CharField(max_length=128, required=True)
     product = forms.CharField(max_length=128, required=True)
     content = forms.CharField(widget=forms.Textarea, max_length=2048, required=True)
 
 
-class ReplyTicketForm(forms.Form):
+class AnswerTicketForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea, max_length=2048, required=True)
