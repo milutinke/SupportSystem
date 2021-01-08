@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Create a new ticket</title>
+    </head>
+    <body>
+        <h1>Create a new ticket</h1>
+        <hr />
+
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form }}
+
+            <input type="submit" value="Create">
+        </form>
+    </body>
+</html>
