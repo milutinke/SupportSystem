@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'support.apps.SupportConfig',
+    'crispy_forms'
 ]
 
 # menjamo default user model u nas

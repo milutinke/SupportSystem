@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from .models import CountriesChoices
 
 User = get_user_model()
 
@@ -8,11 +9,12 @@ class RegisterFrom(forms.Form):
     email = forms.EmailField(label='E-Mail', required=True, max_length=255)
     first_name = forms.CharField(label='First Name', required=True, max_length=64)
     last_name = forms.CharField(label='Last Name', required=True, max_length=64)
+    country = forms.ChoiceField(choices=[(tag.value, tag.value) for tag in CountriesChoices])
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={
         'id': 'confirm'
     }))
 
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={
+    password_confirmation = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={
         'id': 'password_confirm'
     }))
 
@@ -24,6 +26,15 @@ class RegisterFrom(forms.Form):
             raise forms.ValidationError('This email is alerady in use!')
 
         return email
+
+    def clean_password_confirmation(self):
+        pw = self.cleaned_data.get('password')
+        pw_confirmed = self.cleaned_data.get('password_confirmation')
+
+        if pw != pw_confirmed:
+            raise forms.forms.ValidationError('Passwords do not match!')
+
+        return pw_confirmed
 
 
 class LoginForm(forms.Form):
